@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>small drink</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f9fafb;
+      margin: 0;
+      padding: 0;
+      direction: rtl;
+      color: #333;
+    }
+    header {
+      background-color: #0d6efd;
+      color: white;
+      text-align: center;
+      padding: 1rem;
+      font-size: 1.5rem;
+      font-weight: bold;
+    }
+    main {
+      max-width: 700px;
+      margin: 1rem auto;
+      padding: 1rem;
+    }
+    .products {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 1rem;
+    }
+    .product {
+      background: white;
+      padding: 1rem;
+      border-radius: 8px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+    .product img {
+      width: 100%;
+      height: auto;
+      border-radius: 6px;
+      margin-bottom: 0.5rem;
+    }
+    .product h3 {
+      margin: 0 0 0.5rem;
+      color: #0d6efd;
+      font-size: 1rem;
+    }
+    .price {
+      color: #198754;
+      font-weight: bold;
+      margin-bottom: 0.3rem;
+    }
+    .pack {
+      font-size: 0.9rem;
+      color: #555;
+    }
+    input[type=number] {
+      width: 60px;
+      padding: 0.3rem;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      text-align: center;
+      margin-top: 0.4rem;
+    }
+    .form-group {
+      margin-top: 1rem;
+    }
+    input, textarea {
+      width: 100%;
+      padding: 0.5rem;
+      margin-top: 0.3rem;
+      border-radius: 6px;
+      border: 1px solid #aaa;
+      font-size: 1rem;
+    }
+    button {
+      background-color: #0d6efd;
+      color: white;
+      font-size: 1.1rem;
+      padding: 0.8rem;
+      border: none;
+      border-radius: 8px;
+      margin-top: 1rem;
+      cursor: pointer;
+      width: 100%;
+    }
+    .message {
+      text-align: center;
+      margin-top: 1rem;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+<header>small drink</header>
+
+<main>
+  <form id="orderForm">
+    <div class="products" id="productsContainer"></div>
+
+    <div class="form-group">
+      <label for="notes">ملاحظات (اختياري):</label>
+      <textarea id="notes" placeholder="أي ملاحظات إضافية"></textarea>
+    </div>
+
+    <div class="form-group">
+      <label for="small drink">الاسم / اسم المحل:</label>
+      <input type="text" id="name" required placeholder="الاسم الكامل أو اسم المحل" />
+    </div>
+
+    <div class="form-group">
+      <label for="phone">رقم الهاتف:</label>
+      <input type="tel" id="phone" required placeholder="رقم الهاتف" />
+    </div>
+
+    <button type="submit">إرسال الطلب عبر واتساب</button>
+    <div class="message" id="message"></div>
+  </form>
+</main>
+
+<script>
+const products = [
+  { id: 1, name: "ariaf 0.5 L", price: 185, pack: 12, img: "https://i.postimg.cc/vTFRv1Bk/images-17.jpg" },
+  { id: 2, name: "azro pack 6", price: 440, pack: 6, img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRGjgTUnWV8twl-jINHkTu6EJeprxEO0AICLZ-1ci95ak5Rtwhw0ZkEe0_z&s=10" },
+  { id: 3, name: "bifa 20 cl", price: 520, pack: 30, img: "https://i.postimg.cc/GpXhzjwN/4225.jpg" },
+  { id: 4, name: "bifa joy 12.5 cl", price: 430, pack: 48, img: "https://i.postimg.cc/K8FMHQwv/144230829095747170.jpg" },
+  { id: 5, name: "candia 12.5 cl", price: 560, pack: 18, img: "https://i.postimg.cc/Prvyj6SW/Candia-Candy-Choco-125-ML.jpg" },
+  { id: 6, name: "candia 20 cl", price: 820, pack: 18, img: "https://i.postimg.cc/kX215Mgt/images-18.jpg" },
+  { id: 7, name: "coca bouteille 30 cl", price: 580, pack: 12, img: "https://i.postimg.cc/MGHn0P3c/Coca-Cola-30-cl.jpg" },
+  { id: 8, name: "coca canette", price: 1430, pack: 24, img: "https://i.postimg.cc/nz7cT64L/coca-cola-original-canette-format-slim-33-cl-lot-24-72255-00-J.jpg" },
+  { id: 9, name: "flash smaili", price: 500, pack: 148, img: "https://i.postimg.cc/zDc0T6dh/img-1-1746304040475.jpg" },
+  { id: 10, name: "flash smurf", price: 550, pack: 180, img: "https://i.postimg.cc/k5LW2PMM/img-2-1746470252315.jpg" },
+  { id: 11, name: "hamoud canette 24 cl", price: 280, pack: 6, img: "https://i.postimg.cc/sfL1y4Xy/Hamoud-Boualem-0-33-L-Canettes.jpg" },
+  { id: 12, name: "ifri 0.5 L", price: 200, pack: 12, img: "https://i.postimg.cc/WbDFJfKh/Ifri-Eau-Minerales-0-5-L.jpg" },
+  { id: 13, name: "ifri vichi arome 33 cl", price: 360, pack: 12, img: "https://i.postimg.cc/JhyMp9Nk/images-1.jpg" },
+  { id: 14, name: "ifri vichi nature 33 cl", price: 300, pack: 12, img: "https://i.postimg.cc/mk9PKP77/images-2.jpg" },
+  { id: 15, name: "ifruit jus 30 cl", price: 480, pack: 12, img: "https://i.postimg.cc/W446C7zr/06130093056890-a1n1-s01.jpg" },
+  { id: 16, name: "ifruit au lait 20 cl", price: 675, pack: "", img: "https://i.postimg.cc/8kYd3Wgf/IMG-20250501-140930.jpg" },
+  { id: 17, name: "ifruit au lait 30 cl", price: 530, pack: 12, img: "https://i.postimg.cc/ncHxysKZ/Photo00001006.jpg" },
+  { id: 18, name: "ifruit au lait pack 33 cl", price: 700, pack: "", img: "https://i.postimg.cc/gcxtnGYR/1000028111-1536x1536.png" },
+  { id: 19, name: "izem bouteille 33 cl", price: 600, pack: 12, img: "https://i.postimg.cc/B6p3b4sR/Photo00001002.jpg" },
+  { id: 20, name: "izem canette", price: 420, pack: 6, img: "https://i.postimg.cc/6pS6d9kZ/Photo00001040.jpg" },
+  { id: 21, name: "izem canette 0.5 L", price: 750, pack: 6, img: "https://i.postimg.cc/kGhzk5FF/images-4.jpg" },
+  { id: 22, name: "luxe d'orge", price: 1700, pack: 24, img: "https://i.postimg.cc/g2hQTmw8/images-19.jpg" },
+  { id: 23, name: "manbaa 0.5 L", price: 185, pack: 12, img: "https://i.postimg.cc/cJshBSfs/images-20.jpg" },
+  { id: 24, name: "manbaa 1.5 L", price: 175, pack: 6, img: "https://i.postimg.cc/HkTvBXgD/watzr-1.png" },
+  { id: 25, name: "n'gaous 17.5 cl", price: 1050, pack: 24, img: "https://i.postimg.cc/cCQTc4kL/front-fr-4-full.jpg" },
+  { id: 26, name: "n'gaous canette", price: 1230, pack: 24, img: "https://i.postimg.cc/3JTtxmW4/images-5.jpg" },
+  { id: 27, name: "ninja 40 cl", price: 610, pack: 12, img: "https://i.postimg.cc/JhDNqzGC/images-21.jpg" },
+  { id: 28, name: "ninja canette", price: 410, pack: 6, img: "https://i.postimg.cc/m2p15GxL/images-22.jpg" },
+  { id: 29, name: "pitbull", price: 570, pack: 6, img: "https://i.postimg.cc/0QvzwkSf/httpsjumbocolombiaio-vtexassets-comarquivosids1944788410376042498-1-jpgv637814055218800000-2023-10-2.jpg" },
+  { id: 30, name: "ramy au lait", price: 550, pack: 12, img: "https://i.postimg.cc/wjhHshQC/images-23.jpg" },
+  { id: 31, name: "ramy jus bouteille", price: 530, pack: 12, img: "https://i.postimg.cc/3xC5w3K7/images-11.jpg" },
+  { id: 32, name: "ramy canette jus", price: 300, pack: 6, img: "https://i.postimg.cc/Y9PTP9xN/images-7.jpg" },
+  { id: 33, name: "rouiba 20 cl", price: 580, pack: "", img: "https://i.postimg.cc/HkHWzZnY/images.jpg" },
+  { id: 34, name: "Schweppes bouteille 30 cl", price: 620, pack: 12, img: "https://i.postimg.cc/ZR9JnX7c/images-16.jpg" },
+  { id: 35, name: "Schweppes canette", price: 400, pack: 6, img: "https://i.postimg.cc/cJrpBwR1/055393-d1.jpg" },
+  { id: 36, name: "Schweppes gold canette", price: 440, pack: 6, img: "https://i.postimg.cc/ZYr1HTdN/Remove-bg-ai-1710274534220.png" },
+  { id: 37, name: "super bitter", price: 430, pack: 12, img: "https://i.postimg.cc/dQHGzCrc/FB-IMG-1746473997260.jpg" },
+  { id: 38, name: "tazedj bouteille 33 cl", price: 495, pack: 12, img: "https://i.postimg.cc/1tWN1xgr/FB-IMG-1746105480727.jpg" },
+  { id: 39, name: "tazedj pulp", price: 350, pack: 8, img: "https://i.postimg.cc/YS0G7rFD/images-24.jpg" },
+  { id: 40, name: "TNT", price: 630, pack: 12, img: "https://i.postimg.cc/0jYrnbgj/TNT-1.jpg" }
+];
+
+const productsContainer = document.getElementById('productsContainer');
+products.forEach(product => {
+  const div = document.createElement('div');
+  div.className = 'product';
+  div.innerHTML = `
+    <img src="${product.img}" alt="${product.name}" />
+    <h3>${product.name}</h3>
+    <div class="price">${product.price} دج</div>
+    <div class="pack">${product.pack ? 'الكمية في العلبة: ' + product.pack : ''}</div>
+    <label>العدد:</label>
+    <input type="number" id="quantity_${product.id}" min="0" value="0" />
+  `;
+  productsContainer.appendChild(div);
+});
+
+document.getElementById('orderForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+
+  const name = document.getElementById('name').value.trim();
+  const phone = document.getElementById('phone').value.trim();
+  const notes = document.getElementById('notes').value.trim();
+
+  if (!name || !phone) {
+    showMessage('يرجى تعبئة الاسم ورقم الهاتف.', 'red');
+    return;
+  }
+
+  let orderText = `طلب جديد من ${name} (هاتف: ${phone}):\n\n`;
+  let hasItem = false;
+  let total = 0;
+
+  products.forEach(p => {
+    const qty = parseInt(document.getElementById(`quantity_${p.id}`).value) || 0;
+    if (qty > 0) {
+      hasItem = true;
+      const subtotal = p.price * qty;
+      total += subtotal;
+      orderText += `- ${p.name} × ${qty} = ${subtotal} دج\n`;
+    }
+  });
+
+  if (!hasItem) {
+    showMessage('يرجى اختيار منتج واحد على الأقل.', 'red');
+    return;
+  }
+
+  orderText += `\nالمجموع: ${total} دج\n`;
+  if (notes) orderText += `\nملاحظات: ${notes}\n`;
+
+  const merchantPhone = '213540667186';
+  const url = `https://wa.me/${merchantPhone}?text=${encodeURIComponent(orderText)}`;
+  window.open(url, '_blank');
+
+  showMessage('تم فتح الواتساب. إذا لم يفتح، تحقق من المتصفح أو افتح الرابط يدويًا.', 'green');
+  this.reset();
+});
+
+function showMessage(text, color) {
+  const msg = document.getElementById('message');
+  msg.textContent = text;
+  msg.style.color = color || 'black';
+}
+</script>
+
+</body>
+</html>
+			
