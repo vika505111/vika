@@ -1,236 +1,506 @@
 <!DOCTYPE html>
 <html lang="ar">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>small drink</title>
+  <meta charset="UTF-8">
+  <title>دڨلة بوراص 😂</title>
   <style>
+  .controls {
+  position: fixed;
+  bottom: 20px;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  padding: 0 20px;
+  z-index: 1000;
+  pointer-events: none; /* حتى لا تغطي عناصر اللعبة */
+}
+
+.left-controls,
+.right-controls {
+  display: flex;
+  gap: 10px;
+  pointer-events: auto; /* لتفعيل الأزرار فقط */
+}
+
+.left-controls {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+}
+
+.right-controls {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+}
+
+/* شكل الأزرار */
+.controls button {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  font-size: 32px;
+  border: none;
+  background-color: transparent !important;
+  color: white !important;
+}
     body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: #f9fafb;
       margin: 0;
-      padding: 0;
-      direction: rtl;
-      color: #333;
+      overflow: hidden;
+      background-color: #87CEEB;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
-    header {
-      background-color: #0d6efd;
-      color: white;
-      text-align: center;
-      padding: 1rem;
-      font-size: 1.5rem;
-      font-weight: bold;
+
+    #game {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      background-image: linear-gradient(#87CEEB, #ffffff);
     }
-    main {
-      max-width: 700px;
-      margin: 1rem auto;
-      padding: 1rem;
-    }
-    .products {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-      gap: 1rem;
-    }
-    .product {
-      background: white;
-      padding: 1rem;
-      border-radius: 8px;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.1);
-      text-align: center;
-    }
-    .product img {
+
+    .ground {
+      position: absolute;
       width: 100%;
-      height: auto;
-      border-radius: 6px;
-      margin-bottom: 0.5rem;
+      height: 100px;
+      background-color: #228B22;
+      bottom: 0;
+      z-index: 1;
+      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"><rect width="20" height="20" fill="%23175a0f"/><rect x="0" y="15" width="20" height="5" fill="%2333aa33"/></svg>');
     }
-    .product h3 {
-      margin: 0 0 0.5rem;
-      color: #0d6efd;
-      font-size: 1rem;
+
+    .player {
+  position: absolute;
+  width: 60px;
+  height: 80px;
+  background-image: url('https://i.postimg.cc/ZRN3NvkR/1000009554-removebg-preview.png');
+  background-size: cover;
+  background-position: center;
+  background-color: transparent;
+  border-radius: 10px;
+  z-index: 5;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  transition: transform 0.1s;
+  filter: drop-shadow(0 0 0 transparent);
+}
+
+    .jumping {
+      transform: translateY(-10px) scaleY(0.9);
     }
-    .price {
-      color: #198754;
-      font-weight: bold;
-      margin-bottom: 0.3rem;
+
+    .face {
+      position: absolute;
+      top: -40px;
+      left: -5px;
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      overflow: hidden;
+      border: 3px solid #000;
+      background-color: white;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
     }
-    .pack {
-      font-size: 0.9rem;
-      color: #555;
+
+    .face img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
     }
-    input[type=number] {
-      width: 60px;
-      padding: 0.3rem;
-      border: 1px solid #ccc;
+
+    #upload {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      z-index: 10;
+      padding: 8px;
+      background: rgba(255, 255, 255, 0.8);
       border-radius: 5px;
-      text-align: center;
-      margin-top: 0.4rem;
+      border: 2px solid #333;
     }
-    .form-group {
-      margin-top: 1rem;
+
+    .controls {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 10px;
+      z-index: 10;
     }
-    input, textarea {
-      width: 100%;
-      padding: 0.5rem;
-      margin-top: 0.3rem;
-      border-radius: 6px;
-      border: 1px solid #aaa;
-      font-size: 1rem;
-    }
-    button {
-      background-color: #0d6efd;
-      color: white;
-      font-size: 1.1rem;
-      padding: 0.8rem;
+
+    .controls button {
+      padding: 15px 20px;
+      font-size: 20px;
       border: none;
-      border-radius: 8px;
-      margin-top: 1rem;
+      border-radius: 10px;
+      background-color: #333;
+      color: white;
       cursor: pointer;
-      width: 100%;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+      transition: all 0.1s;
     }
-    .message {
-      text-align: center;
-      margin-top: 1rem;
+
+    .controls button:active {
+      background-color: #555;
+      transform: translateY(2px);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    .platform {
+      position: absolute;
+      width: 120px; /* Increased platform width */
+      height: 20px;
+      background-color: #8B4513;
+      border-radius: 10px;
+      box-shadow: inset 0 -5px 0 rgba(0, 0, 0, 0.2),
+      0 4px 8px rgba(0, 0, 0, 0.3);
+      border: 2px solid #5D2906;
+    }
+
+    #gameOver {
+      position: absolute;
+      top: 40%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 48px;
+      color: red;
       font-weight: bold;
+      display: none;
+      z-index: 20;
+      text-align: center;
+      text-shadow: 2px 2px 4px #000;
+      background: rgba(0, 0, 0, 0.7);
+      padding: 30px;
+      border-radius: 15px;
+      border: 3px solid #ff0000;
+    }
+
+    #restartBtn {
+      margin-top: 20px;
+      padding: 15px 30px;
+      font-size: 20px;
+      background-color: #ff0000;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+      transition: all 0.2s;
+    }
+
+    #restartBtn:hover {
+      background-color: #ff3333;
+      transform: scale(1.05);
+    }
+
+    #score {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      font-size: 24px;
+      color: white;
+      z-index: 10;
+      background: rgba(0, 0, 0, 0.5);
+      padding: 10px 20px;
+      border-radius: 10px;
+      font-weight: bold;
+    }
+
+    .cloud {
+      position: absolute;
+      background: white;
+      border-radius: 50%;
+      opacity: 0.8;
+      z-index: 0;
     }
   </style>
 </head>
 <body>
-
-<header>small drink</header>
-
-<main>
-  <form id="orderForm">
-    <div class="products" id="productsContainer"></div>
-
-    <div class="form-group">
-      <label for="notes">ملاحظات (اختياري):</label>
-      <textarea id="notes" placeholder="أي ملاحظات إضافية"></textarea>
-    </div>
-
-    <div class="form-group">
-      <label for="small drink">الاسم / اسم المحل:</label>
-      <input type="text" id="name" required placeholder="الاسم الكامل أو اسم المحل" />
-    </div>
-
-    <div class="form-group">
-      <label for="phone">رقم الهاتف:</label>
-      <input type="tel" id="phone" required placeholder="رقم الهاتف" />
-    </div>
-
-    <button type="submit">إرسال الطلب عبر واتساب</button>
-    <div class="message" id="message"></div>
-  </form>
-</main>
-
+  <audio id="jumpSound" src="https://www.soundjay.com/button/beep-07.mp3"></audio>
+<input type="file" id="upload" accept="image/*" style="display: none;">
+<div id="game">
+  <div id="player" class="player">
+    <div class="face" id="face"></div>
+  </div>
+  <div class="ground" id="ground"></div>
+ <div class="controls">
+  <div class="left-controls">
+    <button id="leftBtn">⬅️</button>
+    <button id="rightBtn">➡️</button>
+  </div>
+  <div class="right-controls">
+    <button id="jumpBtn">⬆️</button>
+  </div>
+</div>
+  <div id="gameOver">
+    يا لمبعر<br>
+    <button id="restartBtn">عاود قود </button>
+  </div>
+  <div id="score">النتيجة: 0</div>
+</div>
 <script>
-const products = [
-  { id: 1, name: "ariaf 0.5 L", price: 185, pack: 12, img: "https://i.postimg.cc/vTFRv1Bk/images-17.jpg" },
-  { id: 2, name: "azro pack 6", price: 440, pack: 6, img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRGjgTUnWV8twl-jINHkTu6EJeprxEO0AICLZ-1ci95ak5Rtwhw0ZkEe0_z&s=10" },
-  { id: 3, name: "bifa 20 cl", price: 520, pack: 30, img: "https://i.postimg.cc/GpXhzjwN/4225.jpg" },
-  { id: 4, name: "bifa joy 12.5 cl", price: 430, pack: 48, img: "https://i.postimg.cc/K8FMHQwv/144230829095747170.jpg" },
-  { id: 5, name: "candia 12.5 cl", price: 560, pack: 18, img: "https://i.postimg.cc/Prvyj6SW/Candia-Candy-Choco-125-ML.jpg" },
-  { id: 6, name: "candia 20 cl", price: 820, pack: 18, img: "https://i.postimg.cc/kX215Mgt/images-18.jpg" },
-  { id: 7, name: "coca bouteille 30 cl", price: 580, pack: 12, img: "https://i.postimg.cc/MGHn0P3c/Coca-Cola-30-cl.jpg" },
-  { id: 8, name: "coca canette", price: 1430, pack: 24, img: "https://i.postimg.cc/nz7cT64L/coca-cola-original-canette-format-slim-33-cl-lot-24-72255-00-J.jpg" },
-  { id: 9, name: "flash smaili", price: 500, pack: 148, img: "https://i.postimg.cc/zDc0T6dh/img-1-1746304040475.jpg" },
-  { id: 10, name: "flash smurf", price: 550, pack: 180, img: "https://i.postimg.cc/k5LW2PMM/img-2-1746470252315.jpg" },
-  { id: 11, name: "hamoud canette 24 cl", price: 280, pack: 6, img: "https://i.postimg.cc/sfL1y4Xy/Hamoud-Boualem-0-33-L-Canettes.jpg" },
-  { id: 12, name: "ifri 0.5 L", price: 200, pack: 12, img: "https://i.postimg.cc/WbDFJfKh/Ifri-Eau-Minerales-0-5-L.jpg" },
-  { id: 13, name: "ifri vichi arome 33 cl", price: 360, pack: 12, img: "https://i.postimg.cc/JhyMp9Nk/images-1.jpg" },
-  { id: 14, name: "ifri vichi nature 33 cl", price: 300, pack: 12, img: "https://i.postimg.cc/mk9PKP77/images-2.jpg" },
-  { id: 15, name: "ifruit jus 30 cl", price: 480, pack: 12, img: "https://i.postimg.cc/W446C7zr/06130093056890-a1n1-s01.jpg" },
-  { id: 16, name: "ifruit au lait 20 cl", price: 675, pack: "", img: "https://i.postimg.cc/8kYd3Wgf/IMG-20250501-140930.jpg" },
-  { id: 17, name: "ifruit au lait 30 cl", price: 530, pack: 12, img: "https://i.postimg.cc/ncHxysKZ/Photo00001006.jpg" },
-  { id: 18, name: "ifruit au lait pack 33 cl", price: 700, pack: "", img: "https://i.postimg.cc/gcxtnGYR/1000028111-1536x1536.png" },
-  { id: 19, name: "izem bouteille 33 cl", price: 600, pack: 12, img: "https://i.postimg.cc/B6p3b4sR/Photo00001002.jpg" },
-  { id: 20, name: "izem canette", price: 420, pack: 6, img: "https://i.postimg.cc/6pS6d9kZ/Photo00001040.jpg" },
-  { id: 21, name: "izem canette 0.5 L", price: 750, pack: 6, img: "https://i.postimg.cc/kGhzk5FF/images-4.jpg" },
-  { id: 22, name: "luxe d'orge", price: 1700, pack: 24, img: "https://i.postimg.cc/g2hQTmw8/images-19.jpg" },
-  { id: 23, name: "manbaa 0.5 L", price: 185, pack: 12, img: "https://i.postimg.cc/cJshBSfs/images-20.jpg" },
-  { id: 24, name: "manbaa 1.5 L", price: 175, pack: 6, img: "https://i.postimg.cc/HkTvBXgD/watzr-1.png" },
-  { id: 25, name: "n'gaous 17.5 cl", price: 1050, pack: 24, img: "https://i.postimg.cc/cCQTc4kL/front-fr-4-full.jpg" },
-  { id: 26, name: "n'gaous canette", price: 1230, pack: 24, img: "https://i.postimg.cc/3JTtxmW4/images-5.jpg" },
-  { id: 27, name: "ninja 40 cl", price: 610, pack: 12, img: "https://i.postimg.cc/JhDNqzGC/images-21.jpg" },
-  { id: 28, name: "ninja canette", price: 410, pack: 6, img: "https://i.postimg.cc/m2p15GxL/images-22.jpg" },
-  { id: 29, name: "pitbull", price: 570, pack: 6, img: "https://i.postimg.cc/0QvzwkSf/httpsjumbocolombiaio-vtexassets-comarquivosids1944788410376042498-1-jpgv637814055218800000-2023-10-2.jpg" },
-  { id: 30, name: "ramy au lait", price: 550, pack: 12, img: "https://i.postimg.cc/wjhHshQC/images-23.jpg" },
-  { id: 31, name: "ramy jus bouteille", price: 530, pack: 12, img: "https://i.postimg.cc/3xC5w3K7/images-11.jpg" },
-  { id: 32, name: "ramy canette jus", price: 300, pack: 6, img: "https://i.postimg.cc/Y9PTP9xN/images-7.jpg" },
-  { id: 33, name: "rouiba 20 cl", price: 580, pack: "", img: "https://i.postimg.cc/HkHWzZnY/images.jpg" },
-  { id: 34, name: "Schweppes bouteille 30 cl", price: 620, pack: 12, img: "https://i.postimg.cc/ZR9JnX7c/images-16.jpg" },
-  { id: 35, name: "Schweppes canette", price: 400, pack: 6, img: "https://i.postimg.cc/cJrpBwR1/055393-d1.jpg" },
-  { id: 36, name: "Schweppes gold canette", price: 440, pack: 6, img: "https://i.postimg.cc/ZYr1HTdN/Remove-bg-ai-1710274534220.png" },
-  { id: 37, name: "super bitter", price: 430, pack: 12, img: "https://i.postimg.cc/dQHGzCrc/FB-IMG-1746473997260.jpg" },
-  { id: 38, name: "tazedj bouteille 33 cl", price: 495, pack: 12, img: "https://i.postimg.cc/1tWN1xgr/FB-IMG-1746105480727.jpg" },
-  { id: 39, name: "tazedj pulp", price: 350, pack: 8, img: "https://i.postimg.cc/YS0G7rFD/images-24.jpg" },
-  { id: 40, name: "TNT", price: 630, pack: 12, img: "https://i.postimg.cc/0jYrnbgj/TNT-1.jpg" }
-];
+  const game = document.getElementById("game");
+  const player = document.getElementById("player");
+  const face = document.getElementById("face");
+  const upload = document.getElementById("upload");
+  const ground = document.getElementById("ground");
+  const scoreElement = document.getElementById("score");
+  const leftBtn = document.getElementById("leftBtn");
+  const rightBtn = document.getElementById("rightBtn");
+  const jumpBtn = document.getElementById("jumpBtn");
+  const gameOverDiv = document.getElementById("gameOver");
+  const restartBtn = document.getElementById("restartBtn");
 
-const productsContainer = document.getElementById('productsContainer');
-products.forEach(product => {
-  const div = document.createElement('div');
-  div.className = 'product';
-  div.innerHTML = `
-    <img src="${product.img}" alt="${product.name}" />
-    <h3>${product.name}</h3>
-    <div class="price">${product.price} دج</div>
-    <div class="pack">${product.pack ? 'الكمية في العلبة: ' + product.pack : ''}</div>
-    <label>العدد:</label>
-    <input type="number" id="quantity_${product.id}" min="0" value="0" />
-  `;
-  productsContainer.appendChild(div);
-});
+  let posX = 100;
+  let posY = 0;
+  let velocityY = 0;
+  let isOnGround = true;
+  let cameraOffset = 0;
+  let isGameOver = false;
+  let score = 0;
+  let movingLeft = false;
+  let movingRight = false;
+  let jumpRequested = false;
+  let jumpSoundEnabled = false;
 
-document.getElementById('orderForm').addEventListener('submit', function(e) {
-  e.preventDefault();
+  let jumpCooldown = 0;
+  const gravity = 1;
+  const jumpPower = 16; // Reduced jump power
+  const moveSpeed = 4; // Reduced move speed
+  const platforms = [];
+  const clouds = [];
 
-  const name = document.getElementById('name').value.trim();
-  const phone = document.getElementById('phone').value.trim();
-  const notes = document.getElementById('notes').value.trim();
+  function createClouds() {
+    for (let i = 0; i < 5; i++) {
+      const cloud = document.createElement("div");
+      cloud.classList.add("cloud");
 
-  if (!name || !phone) {
-    showMessage('يرجى تعبئة الاسم ورقم الهاتف.', 'red');
-    return;
+      const size = 80 + Math.random() * 100;
+      cloud.style.width = size + "px";
+      cloud.style.height = size / 2 + "px";
+
+      const x = Math.random() * window.innerWidth;
+      const y = 150 + Math.random() * (window.innerHeight - 300);
+
+      cloud.style.left = x + "px";
+      cloud.style.top = y + "px";
+
+      game.appendChild(cloud);
+      clouds.push({elem: cloud, x: x, y: y});
+    }
   }
 
-  let orderText = `طلب جديد من ${name} (هاتف: ${phone}):\n\n`;
-  let hasItem = false;
-  let total = 0;
+  function createPlatforms() {
+  for (let i = 1; i <= 200; i++) {
+    const platElem = document.createElement("div");
+    platElem.classList.add("platform");
+    const x = Math.random() * (window.innerWidth - 120); // Adjusted for new platform width
+    const y = 80 * i + Math.random() * 40; // تقليل المسافة بين المنصات
+    platElem.style.left = x + "px";
+    platElem.style.bottom = y + "px";
+    game.appendChild(platElem);
+    platforms.push({elem: platElem, originalBottom: y, touched: false});
+  }
+}
 
-  products.forEach(p => {
-    const qty = parseInt(document.getElementById(`quantity_${p.id}`).value) || 0;
-    if (qty > 0) {
-      hasItem = true;
-      const subtotal = p.price * qty;
-      total += subtotal;
-      orderText += `- ${p.name} × ${qty} = ${subtotal} دج\n`;
+  function resetGame() {
+    posX = 100;
+    posY = 0;
+    velocityY = 0;
+    isOnGround = true;
+    cameraOffset = 0;
+    isGameOver = false;
+    score = 0;
+    scoreElement.textContent = "النتيجة: 0";
+    movingLeft = false;
+    movingRight = false;
+    jumpRequested = false;
+    jumpCooldown = 0; // Reset cooldown on game restart
+face.innerHTML = '<img src="https://i.postimg.cc/xdnFtmyX/IMG-20250611-181140.jpg" alt="face">';
+    player.style.left = posX + "px";
+    player.style.bottom = "100px";
+    player.classList.remove("jumping");
+    gameOverDiv.style.display = "none";
+  
+    platforms.forEach(p => p.elem.remove());
+    platforms.length = 0;
+    clouds.forEach(c => c.elem.remove());
+    clouds.length = 0;
+    createClouds();
+    createPlatforms();
+    requestAnimationFrame(gameLoop);
+  }
+
+  function gameLoop() {
+    if (isGameOver) return;
+
+    if (jumpCooldown > 0) {
+      jumpCooldown--;
+    }
+
+    clouds.forEach(cloud => {
+      cloud.x = (cloud.x + 0.05) % window.innerWidth;
+      cloud.elem.style.left = cloud.x + "px";
+    });
+
+    if (movingLeft) posX -= moveSpeed;
+    if (movingRight) posX += moveSpeed;
+
+    posX = Math.max(0, Math.min(window.innerWidth - player.offsetWidth, posX));
+    player.style.left = posX + "px";
+
+    if (jumpRequested && isOnGround && jumpCooldown === 0) {
+      velocityY = jumpPower;
+      isOnGround = false;
+      jumpRequested = false;
+      jumpCooldown = 10; // Cooldown to prevent immediate re-jumping
+      player.classList.add("jumping");
+    }
+
+    velocityY -= gravity;
+    posY += velocityY;
+
+    isOnGround = false; // Reset each frame, re-evaluated below.
+
+    platforms.forEach(({elem, originalBottom}) => {
+      const platTop = originalBottom + 20;
+      const platLeft = parseInt(elem.style.left);
+      const platRight = platLeft + elem.offsetWidth;
+      const playerBottom = 100 + posY;
+      const playerLeft = posX;
+      const playerRight = posX + player.offsetWidth;
+      const playerPrevBottom = 100 + posY - velocityY;
+
+      if (
+        velocityY <= 0 &&
+        playerPrevBottom >= platTop &&
+        playerBottom <= platTop &&
+        playerRight > platLeft + 10 &&
+        playerLeft < platRight - 10
+      ) {
+        posY = platTop - 100; // Correct position relative to platform
+        velocityY = 0;
+        isOnGround = true;
+        jumpRequested = false;
+        player.classList.remove("jumping");
+
+        // Scoring (move inside the collision detection)
+        if (platTop - cameraOffset > window.innerHeight - 200) {
+          score += 10;
+          scoreElement.textContent = "النتيجة: " + score;
+        }
+
+        return; // Important: Exit the loop after collision
+      }
+    });
+
+    if (posY <= 0 && !isOnGround) {
+      posY = 0;
+      velocityY = 0;
+      isOnGround = true;
+      jumpRequested = false;
+      player.classList.remove("jumping");
+    }
+
+    const screenHeight = window.innerHeight;
+    const playerScreenY = 100 + posY - cameraOffset;
+
+    if (playerScreenY + player.offsetHeight < 0) {
+      isGameOver = true;
+      gameOverDiv.style.display = "block";
+      return;
+    }
+
+    if (playerScreenY > screenHeight / 2) {
+      cameraOffset = 100 + posY - screenHeight / 2;
+    }
+
+    player.style.bottom = (100 + posY - cameraOffset) + "px";
+    platforms.forEach(p => {
+      p.elem.style.bottom = (p.originalBottom - cameraOffset) + "px";
+    });
+
+    if (cameraOffset > 100) {
+      ground.style.display = "none";
+    } else {
+      ground.style.display = "block";
+      ground.style.bottom = -cameraOffset + "px";
+    }
+
+    requestAnimationFrame(gameLoop);
+  }
+
+  upload.addEventListener("change", (e) => {
+    const file = upload.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function (event) {
+        face.innerHTML = `<img src="${event.target.result}" />`;
+      };
+      reader.readAsDataURL(file);
     }
   });
 
-  if (!hasItem) {
-    showMessage('يرجى اختيار منتج واحد على الأقل.', 'red');
-    return;
+  function setupHoldButton(btn, onStart, onEnd) {
+    btn.addEventListener("touchstart", (e) => {
+      e.preventDefault();
+      onStart();
+    });
+
+    btn.addEventListener("touchend", (e) => {
+      e.preventDefault();
+      onEnd();
+    });
+
+    btn.addEventListener("mousedown", onStart);
+    btn.addEventListener("mouseup", onEnd);
+    btn.addEventListener("mouseleave", onEnd);
   }
 
-  orderText += `\nالمجموع: ${total} دج\n`;
-  if (notes) orderText += `\nملاحظات: ${notes}\n`;
+  setupHoldButton(leftBtn, () => movingLeft = true, () => movingLeft = false);
+  setupHoldButton(rightBtn, () => movingRight = true, () => movingRight = false);
 
-  const merchantPhone = '213540667186';
-  const url = `https://wa.me/${merchantPhone}?text=${encodeURIComponent(orderText)}`;
-  window.open(url, '_blank');
+  jumpBtn.addEventListener("click", () => {
+  if (isOnGround && jumpCooldown === 0) {
+    jumpRequested = true;
 
-  showMessage('تم فتح الواتساب. إذا لم يفتح، تحقق من المتصفح أو افتح الرابط يدويًا.', 'green');
-  this.reset();
+    const jumpSound = document.getElementById("jumpSound");
+    if (jumpSound) {
+      jumpSound.currentTime = 0; // يعيد الصوت للبداية
+      jumpSound.play(); // تشغيل الصوت
+    }
+  }
 });
 
-function showMessage(text, color) {
-  const msg = document.getElementById('message');
-  msg.textContent = text;
-  msg.style.color = color || 'black';
-}
-</script>
+  jumpBtn.addEventListener("touchstart", (e) => {
+  e.preventDefault();
+  if (isOnGround && jumpCooldown === 0) {
+    jumpRequested = true;
 
+    const jumpSound = document.getElementById("jumpSound");
+    if (jumpSound) {
+      jumpSound.currentTime = 0;
+      jumpSound.play();
+    }
+  }
+});
+
+  restartBtn.addEventListener("click", resetGame);
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowLeft') movingLeft = true;
+    if (e.key === 'ArrowRight') movingRight = true;
+    if (e.key === 'ArrowUp' && isOnGround && jumpCooldown === 0) {
+      jumpRequested = true;
+    }
+  });
+
+  document.addEventListener('keyup', (e) => {
+    if (e.key === 'ArrowLeft') movingLeft = false;
+    if (e.key === 'ArrowRight') movingRight = false;
+  });
+
+  resetGame();
+</script>
 </body>
 </html>
-			
